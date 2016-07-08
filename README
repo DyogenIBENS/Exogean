@@ -1,0 +1,111 @@
+
+########################################
+#                                      #
+#  Readme File for Exogean version 02  #
+#                                      #
+#  february 2006                       #
+#                                      #
+########################################
+
+
+
+########################################################################
+######## Instructions for installing and running exogean        ########
+########################################################################
+
+
+This directory (SrcofStable) contains:
+######################################
+README                  This file.
+
+exogean.ini             a file that recapitulates all the options of the 
+                        exogean program. Using this file saves having to type
+                        all the options on the command line. To use it, simply 
+                        place it in the directory where the program is executed. 
+                        In this file, all options are left blank and need to be 
+                        filled in. See the file exogean.ini.def for the default 
+                        values of all options. Options typed on the command line 
+                        overide those specified in the exogean.ini file. 
+                        Note that this file must be present in the directory where
+                        exogean is executed.
+
+exogean.ini.def     the same as exogean.ini but with default values filled in. 
+
+.ml, .mli files     the source code of Exogean.
+
+Makefile	    the makefile of Exogean.
+
+Example_files       a directory with example files to run Exogean.
+
+
+
+To install Exogean
+###################
+1) You first need to install OCaml (http://caml.inria.fr/).
+
+2) To produce the Exogean executable, type 'make'  (this is a verbose step).
+ 
+3) To clean the present directory from unuseful files, type 'make clean'.
+
+
+
+To run Exogean
+###############
+You must first compute alignments between the genomic sequence
+and a set of protein sequences and/or mRNA sequences. The quality and 
+completeness of the annotation will depend both on the quality of the genomic
+sequence you are annotating, and of the alignments you have computed. 
+
+For alignments of protein and mRNA sequences, we routinely use the blat 
+program (Kent WJ. Genome Res. 2002 12:656-64) available at 
+http://www.soe.ucsc.edu/~kent/ but other programs such as exonerate available 
+at http://www.ebi.ac.uk/~guy/exonerate/ or Blast will also work fine. See the 
+exogean help page (exogean -h) for details on input file formats.
+
+As an example, here are the blat parameters we used for the EGASP competition:
+
+** to align mouse protein sequences against human genomic DNA: 
+
+blat dna.fa prot.mask.fa outfile.psl -t=dnax -q=prot -mask=lower 
+-noHead -tileSize=7 -oneOff=1
+
+and from this only HSPs of size larger than 25 bp are retained.
+
+** to align human mRNAs sequences against human genomic DNA:
+
+blat dna.fa mrna.fa outfile.psl -t=dna -q=dna -noHead -fine -minIdentity=98 
+-ooc=11.ooc -trimHardA -trimT -extendThroughN
+
+
+For aligning, it is best if protein repeats are masked (e.g. with the seg 
+program) but the fasta file given to exogean with the -bqp option should be 
+unmasked. Protein names should not contain "pipe" signs. Protein sequences
+must only contain single letter amino acid codes, or "x" or "X" signs for 
+masked regions. No stops, no "*" signs. 
+
+
+Here is an example of Exogean command line execution 
+
+./exogean -o gtf:ENm002_vs_Gbkmrna_IPImouse.exo -gseq Example_files/ENm002_Build35.fa 
+-hspp exf:Example_files/ENm002_vs_IPImouse.exf -bqp Example_files/ENm002_ipi.MOUSE_bq.fa 
+-hspa psl:Example_files/ENm002_vs_Gbkmrna.psl 
+
+
+For getting help about how to use Exogean
+
+./exogean -h
+
+
+
+
+
+################################################################################3
+
+To cite Exogean, please use
+###########################
+Djebali, S., Delaplace, F., Roest Crollius, H., Exogean: a framework for annotating 
+protein-coding genes in eukaryotic genomic DNA. Genome Biology, 2006, 7 Suppl 1:S7.1-10. 
+
+For bug reporting, questions or comments, please email
+###################################################### 
+exogean@biologie.ens.fr
